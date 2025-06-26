@@ -9,6 +9,7 @@ import { Planet } from '@/core/Planet'
 import { usePlanetStore } from '@/stores/planet'
 import { DataTargetRenderer } from '@/core/DataTargetRenderer'
 import type { PlanetType } from '@/core/planetPresets'
+import { BiomeMap } from '@/core/BiomeMap'
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 

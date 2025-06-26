@@ -8,7 +8,7 @@ import * as THREE from 'three'
 import { Planet } from '@/core/Planet'
 import { usePlanetStore } from '@/stores/planet'
 import { DataTargetRenderer } from '@/core/DataTargetRenderer'
-import { BiomeMap } from '@/core/BiomeMap'
+import type { PlanetType } from '@/core/planetPresets'
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 
@@ -16,14 +16,24 @@ onMounted(() => {
   if (!canvasRef.value) return
 
   const canvas = canvasRef.value
-  const planet = new Planet(canvas)
+  const types: PlanetType[] = ['earth', 'ice', 'burnt', 'moon', 'gas']
+  const type = types[Math.floor(Math.random() * types.length)]
+  const planet = new Planet(canvas, type)
   const renderer = planet.getRenderer()
-  const dataTarget = new DataTargetRenderer(canvas.width, canvas.height, renderer, planet.getMesh(), planet.getCamera())
+  const dataTarget = new DataTargetRenderer(canvas.width, canvas.height, renderer, planet.getMesh(), planet.getCamera(), planet.getEquatorTemp())
   const raycaster = new THREE.Raycaster()
   const mouse = new THREE.Vector2()
-  const biomeMap = new BiomeMap()
+  const biomeMap = planet.getGenerator().biomeMap
 
   planet.animate()
+
+  let rotating = true
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+      rotating = !rotating
+      planet.setAutoRotate(rotating)
+    }
+  })
 
   canvas.addEventListener('mousemove', (e) => {
     const rect = canvas.getBoundingClientRect()
@@ -36,9 +46,11 @@ onMounted(() => {
     raycaster.setFromCamera(mouse, planet.getCamera())
     const hits = raycaster.intersectObject(planet.getMesh())
     if (hits.length === 0) return
-    const point = hits[0].point.clone().normalize()
-    const lat = Math.asin(point.y) / Math.PI
-    const lon = Math.atan2(point.z, point.x) / (2 * Math.PI)
+    const hitPoint = hits[0].point.clone()
+    planet.updateLine(hitPoint)
+    const norm = hitPoint.clone().normalize()
+    const lat = Math.asin(norm.y) / Math.PI
+    const lon = Math.atan2(norm.z, norm.x) / (2 * Math.PI)
 
     // Read encoded climate data from the GPU
     dataTarget.render()

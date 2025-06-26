@@ -1,18 +1,25 @@
 import * as THREE from 'three'
 
+export interface PlanetMaterialOptions {
+        seaLevel: number
+        equatorTemp: number
+}
+
 export class PlanetMaterial extends THREE.ShaderMaterial {
-	constructor() {
-		super({
-			uniforms: {
-				time: { value: 0 },
-				elevationScale: { value: 0.2 },
-				obliquity: { value: 0.41 }, // ~23.5 degrees
-				seed: { value: Math.random() * 1000 }
-			},
-			vertexShader,
-			fragmentShader,
-		})
-	}
+        constructor(options: PlanetMaterialOptions) {
+                super({
+                        uniforms: {
+                                time: { value: 0 },
+                                elevationScale: { value: 0.2 },
+                                obliquity: { value: 0.41 }, // ~23.5 degrees
+                                seed: { value: Math.random() * 1000 },
+                                seaLevel: { value: options.seaLevel },
+                                equatorTemp: { value: options.equatorTemp }
+                        },
+                        vertexShader,
+                        fragmentShader,
+                })
+        }
 
 	update(time: number) {
 		this.uniforms.time.value = time
@@ -23,6 +30,8 @@ const vertexShader = /* glsl */ `
 uniform float elevationScale;
 uniform float obliquity;
 uniform float seed;
+uniform float seaLevel;
+uniform float equatorTemp;
 
 varying vec3 vNormal;
 varying float vElevation;
@@ -96,9 +105,11 @@ const fragmentShader = /* glsl */ `
 varying vec3 vNormal;
 varying float vElevation;
 varying float vLatitude;
+uniform float seaLevel;
+uniform float equatorTemp;
 
 vec3 biomeColor(float temp, float pressure, float elevation) {
-  if (elevation < 0.1) return vec3(0.1, 0.2, 0.5); // Ocean
+  if (elevation < seaLevel) return vec3(0.1, 0.2, 0.5); // Ocean
   if (temp < -15.0) return vec3(0.85, 0.9, 1.0);   // Ice cap
   if (temp < 0.0) return vec3(0.7, 0.85, 0.95);    // Tundra
   if (pressure < 0.4) return vec3(0.6, 0.5, 0.4);  // Highlands
@@ -109,7 +120,7 @@ vec3 biomeColor(float temp, float pressure, float elevation) {
 
 void main() {
   float lat = clamp(vLatitude, -1.0, 1.0);
-  float baseTemp = 60.0 * (1.0 - abs(lat));
+  float baseTemp = equatorTemp * (1.0 - abs(lat));
   float temp = baseTemp - vElevation * 65.0;
   float pressure = exp(-vElevation * 6.0);
 

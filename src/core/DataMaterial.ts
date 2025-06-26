@@ -1,23 +1,25 @@
 import * as THREE from 'three'
 
 export class DataMaterial extends THREE.ShaderMaterial {
-	constructor() {
-		super({
-			uniforms: {
-				elevationScale: { value: 0.2 },
-				obliquity: { value: 0.41 },
-				seed: { value: Math.random() * 1000 }
-			},
-			vertexShader,
-			fragmentShader,
-		})
-	}
+        constructor(equatorTemp: number) {
+                super({
+                        uniforms: {
+                                elevationScale: { value: 0.2 },
+                                obliquity: { value: 0.41 },
+                                seed: { value: Math.random() * 1000 },
+                                equatorTemp: { value: equatorTemp }
+                        },
+                        vertexShader,
+                        fragmentShader,
+                })
+        }
 }
 
 const vertexShader = /* glsl */`
 uniform float elevationScale;
 uniform float obliquity;
 uniform float seed;
+uniform float equatorTemp;
 
 varying float vElevation;
 varying float vLatitude;
@@ -89,7 +91,7 @@ varying float vLatitude;
 
 void main() {
   float lat = clamp(vLatitude, -1.0, 1.0);
-  float baseTemp = 60.0 * (1.0 - abs(lat));
+  float baseTemp = equatorTemp * (1.0 - abs(lat));
   float temp = baseTemp - vElevation * 65.0;
   float pressure = exp(-vElevation * 6.0);
 

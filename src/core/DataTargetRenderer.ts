@@ -5,16 +5,17 @@ export class DataTargetRenderer {
 	public renderTarget: THREE.WebGLRenderTarget
 	public material: DataMaterial
 
-	constructor(
-		private width: number,
-		private height: number,
-		private renderer: THREE.WebGLRenderer,
-		private mesh: THREE.Mesh,
-		private camera: THREE.PerspectiveCamera
-	) {
-		this.renderTarget = new THREE.WebGLRenderTarget(width, height)
-		this.material = new DataMaterial()
-	}
+        constructor(
+                private width: number,
+                private height: number,
+                private renderer: THREE.WebGLRenderer,
+                private mesh: THREE.Mesh,
+                private camera: THREE.PerspectiveCamera,
+                equatorTemp: number
+        ) {
+                this.renderTarget = new THREE.WebGLRenderTarget(width, height)
+                this.material = new DataMaterial(equatorTemp)
+        }
 
 	render() {
 		const originalMaterial = this.mesh.material

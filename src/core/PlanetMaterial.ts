@@ -91,7 +91,8 @@ void main() {
   float elevation = fbm(displaced * 2.5);
   elevation = elevation * 0.8 - 0.2; // shift average downward
   elevation = max(elevation, 0.0);  // remove any below-sea "holes"
-  displaced *= 1.0 + elevation * elevationScale;
+  float land = max(elevation - seaLevel, 0.0);
+  displaced *= 1.0 + land * elevationScale;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
 

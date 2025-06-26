@@ -21,7 +21,15 @@ onMounted(() => {
   const type = types[Math.floor(Math.random() * types.length)]
   const planet = new Planet(canvas, type)
   const renderer = planet.getRenderer()
-  const dataTarget = new DataTargetRenderer(canvas.width, canvas.height, renderer, planet.getMesh(), planet.getCamera(), planet.getEquatorTemp())
+  const dataTarget = new DataTargetRenderer(
+    canvas.width,
+    canvas.height,
+    renderer,
+    planet.getMesh(),
+    planet.getCamera(),
+    planet.getEquatorTemp(),
+    planet.getSeaLevel()
+  )
   const raycaster = new THREE.Raycaster()
   const mouse = new THREE.Vector2()
   const biomeMap = planet.getGenerator().biomeMap

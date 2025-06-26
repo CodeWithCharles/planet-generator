@@ -14,5 +14,8 @@
 
 <script setup lang="ts">
 import { usePlanetStore } from '@/stores/planet'
-const hover = usePlanetStore().hover
+import { storeToRefs } from 'pinia'
+
+const store = usePlanetStore()
+const { hover } = storeToRefs(store)
 </script>

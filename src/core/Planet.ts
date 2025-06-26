@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { PlanetGenerator } from './PlanetGenerator'
 import { PlanetMaterial, PlanetMaterialOptions } from './PlanetMaterial'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { PlanetType, PlanetPreset, PlanetPresets } from './planetPresets'
 
 export class Planet {
@@ -96,5 +96,6 @@ export class Planet {
         getMesh() { return this.mesh }
         getGenerator() { return this.generator }
         getEquatorTemp() { return this.preset.equatorTemp }
+        getSeaLevel() { return this.preset.seaLevel }
         getRenderer() { return this.renderer }
 }

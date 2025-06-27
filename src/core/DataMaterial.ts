@@ -88,6 +88,8 @@ void main() {
 `;
 
 const fragmentShader = /* glsl */`
+uniform float equatorTemp;
+uniform float seaLevel;
 varying float vElevation;
 varying float vLatitude;
 

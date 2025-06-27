@@ -1,12 +1,13 @@
 {
-	"compilerOptions": {
-		"baseUrl": ".",
-		"paths": {
-			"@/*": [
-				"src/*"
-			]
-		}
-	},
+        "compilerOptions": {
+                "baseUrl": ".",
+                "paths": {
+                        "@/*": [
+                                "src/*"
+                        ]
+                },
+                "noEmit": true
+        },
 	"include": [
 		"src"
 	]

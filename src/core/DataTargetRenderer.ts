@@ -11,10 +11,12 @@ export class DataTargetRenderer {
                 private renderer: THREE.WebGLRenderer,
                 private mesh: THREE.Mesh,
                 private camera: THREE.PerspectiveCamera,
-                equatorTemp: number
+                equatorTemp: number,
+                seaLevel: number,
+                seed: number
         ) {
                 this.renderTarget = new THREE.WebGLRenderTarget(width, height)
-                this.material = new DataMaterial(equatorTemp)
+                this.material = new DataMaterial(equatorTemp, seaLevel, seed)
         }
 
 	render() {

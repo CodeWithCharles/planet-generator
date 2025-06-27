@@ -1,5 +1,11 @@
 <template>
-  <canvas ref="canvasRef" class="w-screen h-screen block"></canvas>
+  <div class="relative w-screen h-screen">
+    <canvas ref="canvasRef" class="w-full h-full block"></canvas>
+    <div ref="crosshairRef" class="pointer-events-none absolute crosshair">
+      <div class="vertical"></div>
+      <div class="horizontal"></div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -12,6 +18,7 @@ import type { PlanetType } from '@/core/planetPresets'
 import { BiomeMap } from '@/core/BiomeMap'
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
+const crosshairRef = ref<HTMLDivElement | null>(null)
 
 onMounted(() => {
   if (!canvasRef.value) return
@@ -28,7 +35,8 @@ onMounted(() => {
     planet.getMesh(),
     planet.getCamera(),
     planet.getEquatorTemp(),
-    planet.getSeaLevel()
+    planet.getSeaLevel(),
+    planet.getSeed()
   )
   const raycaster = new THREE.Raycaster()
   const mouse = new THREE.Vector2()
@@ -48,6 +56,11 @@ onMounted(() => {
     const rect = canvas.getBoundingClientRect()
     const x = Math.floor(e.clientX - rect.left)
     const y = Math.floor(e.clientY - rect.top)
+
+    if (crosshairRef.value) {
+      crosshairRef.value.style.left = `${x}px`
+      crosshairRef.value.style.top = `${y}px`
+    }
 
     // Determine latitude/longitude via raycasting
     mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
@@ -80,5 +93,28 @@ onMounted(() => {
 <style scoped>
 canvas {
   display: block;
+}
+.crosshair {
+  width: 12px;
+  height: 12px;
+  transform: translate(-50%, -50%);
+}
+.crosshair .vertical {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: red;
+  transform: translateX(-50%);
+}
+.crosshair .horizontal {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: red;
+  transform: translateY(-50%);
 }
 </style>

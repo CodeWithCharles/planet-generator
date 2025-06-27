@@ -3,6 +3,7 @@ import * as THREE from 'three'
 export interface PlanetMaterialOptions {
         seaLevel: number
         equatorTemp: number
+        seed: number
 }
 
 export class PlanetMaterial extends THREE.ShaderMaterial {
@@ -12,7 +13,7 @@ export class PlanetMaterial extends THREE.ShaderMaterial {
                                 time: { value: 0 },
                                 elevationScale: { value: 0.2 },
                                 obliquity: { value: 0.41 }, // ~23.5 degrees
-                                seed: { value: Math.random() * 1000 },
+                                seed: { value: options.seed },
                                 seaLevel: { value: options.seaLevel },
                                 equatorTemp: { value: options.equatorTemp }
                         },

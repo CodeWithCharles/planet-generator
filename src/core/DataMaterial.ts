@@ -1,12 +1,12 @@
 import * as THREE from 'three'
 
 export class DataMaterial extends THREE.ShaderMaterial {
-        constructor(equatorTemp: number, seaLevel: number) {
+        constructor(equatorTemp: number, seaLevel: number, seed: number) {
                 super({
                         uniforms: {
                                 elevationScale: { value: 0.2 },
                                 obliquity: { value: 0.41 },
-                                seed: { value: Math.random() * 1000 },
+                                seed: { value: seed },
                                 equatorTemp: { value: equatorTemp },
                                 seaLevel: { value: seaLevel }
                         },

@@ -1,13 +1,14 @@
 import * as THREE from 'three'
 
 export class DataMaterial extends THREE.ShaderMaterial {
-        constructor(equatorTemp: number) {
+        constructor(equatorTemp: number, seaLevel: number, seed: number) {
                 super({
                         uniforms: {
                                 elevationScale: { value: 0.2 },
                                 obliquity: { value: 0.41 },
-                                seed: { value: Math.random() * 1000 },
-                                equatorTemp: { value: equatorTemp }
+                                seed: { value: seed },
+                                equatorTemp: { value: equatorTemp },
+                                seaLevel: { value: seaLevel }
                         },
                         vertexShader,
                         fragmentShader,
@@ -20,6 +21,7 @@ uniform float elevationScale;
 uniform float obliquity;
 uniform float seed;
 uniform float equatorTemp;
+uniform float seaLevel;
 
 varying float vElevation;
 varying float vLatitude;
@@ -76,8 +78,8 @@ void main() {
   displaced = rotationY(obliquity) * displaced;
 
   float elevation = max(fbm(displaced * 2.5) * 0.8 - 0.2, 0.0);
-
-  displaced *= 1.0 + elevation * elevationScale;
+  float land = max(elevation - seaLevel, 0.0);
+  displaced *= 1.0 + land * elevationScale;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
   vElevation = elevation;
@@ -86,6 +88,8 @@ void main() {
 `;
 
 const fragmentShader = /* glsl */`
+uniform float equatorTemp;
+uniform float seaLevel;
 varying float vElevation;
 varying float vLatitude;
 

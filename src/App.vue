@@ -4,7 +4,7 @@
 
 		<div class="absolute top-4 left-4 z-10">
 			<h1 class="text-2xl font-bold mb-4">Procedural Planet Generator</h1>
-			<InfoPanel biome="Ocean" :temperature="15.2" :pressure="101.3" />
+                <InfoPanel />
 		</div>
 	</div>
 </template>

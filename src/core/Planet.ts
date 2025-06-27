@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { PlanetGenerator } from './PlanetGenerator'
 import { PlanetMaterial, PlanetMaterialOptions } from './PlanetMaterial'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { PlanetType, PlanetPreset, PlanetPresets } from './planetPresets'
 
 export class Planet {
@@ -15,6 +15,7 @@ export class Planet {
         private line: THREE.Line
         private autoRotate = true
         private preset: PlanetPreset
+        private seed: number
 
         constructor(canvas: HTMLCanvasElement, type: PlanetType = 'earth') {
                 this.scene = new THREE.Scene()
@@ -25,8 +26,13 @@ export class Planet {
                 this.renderer.setSize(canvas.clientWidth, canvas.clientHeight)
 
                 this.preset = PlanetPresets[type]
-                this.generator = new PlanetGenerator(Math.random(), type)
-                this.mesh = this.createPlanetMesh({ seaLevel: this.preset.seaLevel, equatorTemp: this.preset.equatorTemp })
+                this.seed = Math.random() * 1000
+                this.generator = new PlanetGenerator(this.seed, type)
+                this.mesh = this.createPlanetMesh({
+                        seaLevel: this.preset.seaLevel,
+                        equatorTemp: this.preset.equatorTemp,
+                        seed: this.seed
+                })
 
                 this.controls = new OrbitControls(this.camera, this.renderer.domElement)
                 this.controls.enableDamping = true
@@ -96,5 +102,7 @@ export class Planet {
         getMesh() { return this.mesh }
         getGenerator() { return this.generator }
         getEquatorTemp() { return this.preset.equatorTemp }
+        getSeaLevel() { return this.preset.seaLevel }
+        getSeed() { return this.seed }
         getRenderer() { return this.renderer }
 }

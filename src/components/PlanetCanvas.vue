@@ -29,8 +29,8 @@ onMounted(() => {
   const planet = new Planet(canvas, type)
   const renderer = planet.getRenderer()
   const dataTarget = new DataTargetRenderer(
-    canvas.clientWidth,
-    canvas.clientHeight,
+    canvas.width,
+    canvas.height,
     renderer,
     planet.getMesh(),
     planet.getCamera(),
@@ -56,6 +56,9 @@ onMounted(() => {
     const rect = canvas.getBoundingClientRect()
     const x = Math.floor(e.clientX - rect.left)
     const y = Math.floor(e.clientY - rect.top)
+    const pxRatio = renderer.getPixelRatio()
+    const pixelX = Math.floor(x * pxRatio)
+    const pixelY = Math.floor(y * pxRatio)
 
     if (crosshairRef.value) {
       crosshairRef.value.style.left = `${x}px`
@@ -80,7 +83,7 @@ onMounted(() => {
 
     // Read encoded climate data from the GPU
     dataTarget.render()
-    const pixel = dataTarget.readPixel(x, y)
+    const pixel = dataTarget.readPixel(pixelX, pixelY)
     const decoded = dataTarget.decodePixel(pixel)
     const biome = biomeMap.get(decoded.temperature, decoded.pressure, decoded.elevation)
 

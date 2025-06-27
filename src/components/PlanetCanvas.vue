@@ -29,8 +29,8 @@ onMounted(() => {
   const planet = new Planet(canvas, type)
   const renderer = planet.getRenderer()
   const dataTarget = new DataTargetRenderer(
-    canvas.width,
-    canvas.height,
+    canvas.clientWidth,
+    canvas.clientHeight,
     renderer,
     planet.getMesh(),
     planet.getCamera(),
@@ -68,11 +68,15 @@ onMounted(() => {
     raycaster.setFromCamera(mouse, planet.getCamera())
     const hits = raycaster.intersectObject(planet.getMesh())
     if (hits.length === 0) return
+
     const hitPoint = hits[0].point.clone()
     planet.updateLine(hitPoint)
-    const norm = hitPoint.clone().normalize()
-    const lat = Math.asin(norm.y) / Math.PI
-    const lon = Math.atan2(norm.z, norm.x) / (2 * Math.PI)
+
+    // Convert hit point to the planet's local space so that rotation
+    // doesn't affect latitude/longitude calculations
+    const local = planet.getMesh().worldToLocal(hitPoint.clone()).normalize()
+    const lat = Math.asin(local.y) / Math.PI
+    const lon = Math.atan2(local.z, local.x) / (2 * Math.PI)
 
     // Read encoded climate data from the GPU
     dataTarget.render()
